@@ -1,0 +1,18 @@
+.layout-container {
+    height: 100vh; /* Займає всю висоту екрану */
+}
+
+.sider {
+    height: 100vh;
+}
+
+.content {
+    overflow: auto; /* Прокрутка для контенту */
+    padding: 24px;
+    background: #fff;
+    min-height: 280px;
+}
+
+.button-add-categories{
+    margin: 20px;
+}
