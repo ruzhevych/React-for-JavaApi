@@ -5,16 +5,18 @@ import Sidebar from "./Sidebar";
 
 const Layout: React.FC = () => {
     return (
-        <div className="flex h-screen bg-gray-100">
-            {/* Sidebar */}
-            <Sidebar />
-
-            <div className="flex flex-col flex-1">
-                {/* Header */}
+        <div className="h-screen flex flex-col bg-white">
+            {/* Header на всю ширину з тінню та z-index */}
+            <header className="relative z-10 shadow-md">
                 <Header />
+            </header>
+
+            <div className="flex flex-1 overflow-hidden">
+                {/* Sidebar під Header */}
+                <Sidebar />
 
                 {/* Main Content */}
-                <main className="flex-1 p-4">
+                <main className="flex-1 p-4 overflow-auto">
                     <Outlet />
                 </main>
             </div>

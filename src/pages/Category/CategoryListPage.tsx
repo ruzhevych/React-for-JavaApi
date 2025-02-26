@@ -1,7 +1,8 @@
 import { useDeleteCategoryMutation, useGetCategoriesQuery } from "../../services/apiCategory.ts";
 import { Link } from "react-router-dom";
 import { Button, Dropdown, MenuProps, notification, Spin } from "antd";
-import { MoreOutlined } from "@ant-design/icons";
+import { EditOutlined, PlusOutlined } from "@ant-design/icons";
+import {APP_ENV} from "../../env";
 
 const CategoryListPage = () => {
     const { data: list, isLoading, error } = useGetCategoriesQuery();
@@ -21,82 +22,65 @@ const CategoryListPage = () => {
         }
     };
 
-
     const renderActions = (id: number) => {
         const items: MenuProps["items"] = [
-            {
-                key: "edit",
-                label: <Link to={`edit/${id}`}>Редагувати</Link>,
-            },
-            {
-                key: "delete",
-                danger: true,
-                label: (
-                    <span onClick={() => handleDelete(id)}>Видалити</span>
-                ),
-            },
+            { key: "edit", label: <Link to={`edit/${id}`}>Редагувати</Link> },
+            { key: "delete", danger: true, label: <span onClick={() => handleDelete(id)}>Видалити</span> },
         ];
 
         return (
             <Dropdown menu={{ items }} trigger={["click"]}>
-                <Button icon={<MoreOutlined />} shape="circle" />
+                <Button icon={<EditOutlined />} shape="default" className="bg-transparent border-none text-white hover:text-purple-500" />
             </Dropdown>
         );
     };
 
     return (
-        <>
-            <h1 className="text-center text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 my-6">
+        <div className="bg-white min-h-screen p-8 text-white font-sans">
+            <h1 className="text-center text-4xl font-bold text-blue-400 my-2">
                 Список категорій
             </h1>
 
-            <div className="flex justify-end mb-4">
-                <Link
-                    to={"create"}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                >
-                    Додати
+            <div className="flex justify-end mb-6">
+                <Link to="create" className="flex items-center gap-2 bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">
+                    <PlusOutlined /> Додати категорію
                 </Link>
             </div>
 
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div className="bg-gray-100 overflow-hidden rounded-lg">
                 {isLoading ? (
                     <div className="flex justify-center py-10">
-                        <Spin size="large" />
+                        <Spin size="large" className="text-blue-400" />
                     </div>
                 ) : error ? (
                     <p className="text-red-500 text-center py-4">Помилка завантаження даних</p>
                 ) : (
-                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <table className="w-full text-sm text-left border border-gray-100">
+                        <thead className="bg-gray-200">
                         <tr>
-                            <th scope="col" className="px-6 py-3">Назва</th>
-                            <th scope="col" className="px-6 py-3">Зображення</th>
-                            <th scope="col" className="px-6 py-3">Опис</th>
-                            <th scope="col" className="px-6 py-3 text-center">Дії</th>
+                            <th className="px-6 py-3 text-blue-400">Зображення</th>
+                            <th className="px-6 py-3 text-blue-400">Назва</th>
+                            <th className="px-6 py-3 text-blue-400">Опис</th>
+                            <th className="px-6 py-3 text-center text-blue-400">Дії</th>
                         </tr>
                         </thead>
                         <tbody>
                         {list?.map((category) => (
-                            <tr
-                                key={category.id}
-                                className="odd:bg-gray even:bg-gray-50 border-b dark:border-gray-700"
-                            >
-                                <td className="px-6 py-4 font-medium text-gray-900 dark:text-gray">
-                                    {category.name}
+                            <tr key={category.id} className="odd:bg-gray-100 even:bg-gray-200">
+                                <td className="px-6 py-4 text-gray-800">
+                                    <img src={`${APP_ENV.REMOTE_MEDIUM_IMAGES_URL}${category.image}`}
+                                         alt={category.name} className="w-16 h-16 object-cover"/>
                                 </td>
-                                <td className="px-6 py-4">
-                                    <img src={category.image} alt={category.name} className="w-16 h-16 object-cover" />
-                                </td>
-                                <td className="px-6 py-4">{category.description}</td>
-                                <td className="px-6 py-4 text-center">{renderActions(category.id)}</td>
+                                <td className="px-6 py-4 font-medium text-gray-800">{category.name}</td>
+                                <td className="px-6 py-4 text-gray-800">{category.description}</td>
+                                <td className="px-6 py-4 text-center text-gray-800">{renderActions(category.id)}</td>
                             </tr>
                         ))}
                         </tbody>
                     </table>
                 )}
             </div>
-        </>
+        </div>
     );
 };
 

@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {APP_ENV} from "../env"
 import {ICategoryItem, ICategoryPostRequest, ICategoryPutRequest} from "./types.ts";
+import {serialize} from "object-to-formdata";
 
 
 // Define the API slice
@@ -18,11 +19,18 @@ export const apiCategory = createApi({
             providesTags: (_, __, id) => [{ type: 'Category', id }],
         }),
         createCategory: builder.mutation<ICategoryItem, ICategoryPostRequest>({
-            query: (newCategory) => ({
-                url: 'categories',
-                method: 'POST',
-                body: newCategory,
-            }),
+            query: (newCategory) => {
+                try {
+                    const formData = serialize(newCategory);
+                    return {
+                        url: 'categories',
+                        method: 'POST',
+                        body: formData,
+                    }
+                } catch {
+                    throw new Error("Error serializing the form data.");
+                }
+            },
             invalidatesTags: ["Category"],
         }),
         updateCategory: builder.mutation<ICategoryItem, ICategoryPutRequest>({

@@ -38,7 +38,7 @@ const EditCategoryPage = () => {
 
     return (
         <div style={{maxWidth: '400px', margin: '0 auto'}}>
-            <h1 className="text-center text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 my-6">
+            <h1 className="text-center text-4xl font-extrabold text-transparent bg-clip-text bg-blue-400 my-6">
                 Зміна категорії
             </h1>
             <Form
