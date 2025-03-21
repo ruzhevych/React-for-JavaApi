@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
 const Header: React.FC = () => {
     return (
@@ -7,25 +8,16 @@ const Header: React.FC = () => {
             <nav>
                 <ul className="flex gap-4">
                     <li>
-                        <a href="/" className="text-gray-600 hover:text-blue-500">
-                            Home
-                        </a>
+                        <Link to="/login" className="text-gray-600 hover:text-blue-500">
+                            Вхід
+                        </Link>
                     </li>
                     <li>
-                        <a href="/categories" className="text-gray-600 hover:text-blue-500">
-                            Категорії
-                        </a>
+                        <Link to="/register" className="text-gray-600 hover:text-blue-500">
+                            Реєстрація
+                        </Link>
                     </li>
-                    <li>
-                        <a href="/about" className="text-gray-600 hover:text-blue-500">
-                            About
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/contact" className="text-gray-600 hover:text-blue-500">
-                            Contact
-                        </a>
-                    </li>
+
                 </ul>
             </nav>
         </header>

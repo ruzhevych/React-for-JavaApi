@@ -7,9 +7,11 @@ import ContactPage from "./pages/ContactPage";
 import CategoryListPage from "./pages/Category/CategoryListPage.tsx";
 import CreateCategoryPage from "./pages/Category/CreateCategoryPage.tsx";
 import EditCategoryPage from "./pages/Category/EditCategoryPage.tsx";
+import ProductListPage from "./pages/Product/ProductListPage.tsx";
 import CreateProductPage from "./pages/Product/CreateProductPage.tsx";
 import EditProductPage from "./pages/Product/EditProductPage.tsx";
-import ProductListPage from "./pages/Product/ProductListPage.tsx";
+import RegisterPage from "./pages/auth/RegisterPage.tsx";
+import LoginPage from "./pages/auth/LoginPage.tsx";
 
 const App: React.FC = () => {
     return (
@@ -29,7 +31,12 @@ const App: React.FC = () => {
                         <Route index element={<ProductListPage />} />
                         <Route path="create" element={<CreateProductPage />} />
                         <Route path="edit/:id" element={<EditProductPage />} />
+                        {/*<Route path="product/:id" element={<ProductDetail />} />*/}
                     </Route>
+
+                    <Route path="register" element={<RegisterPage/>}/>
+                    <Route path="login" element={<LoginPage/>}/>
+
                 </Route>
             </Routes>
         </Router>

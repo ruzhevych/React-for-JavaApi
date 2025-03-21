@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import {Button, Input, notification, Upload, Select, Form} from "antd";
+import {Button, Input, Upload, Select, Form} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import {useGetProductQuery, useUpdateProductMutation} from "../../services/apiProduct";
 import {useGetCategoriesQuery} from "../../services/apiCategory";
@@ -15,19 +15,11 @@ import Item from "antd/es/list/Item";
 const EditProductPage = () => {
     const {id} = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const {data: productData, isLoading: isProductLoading} = useGetProductQuery(Number(id));
+    const {data: productData} = useGetProductQuery(Number(id));
     const {data: categories, isLoading: isCategoriesLoading, error: categoriesError} = useGetCategoriesQuery();
     const [updateProduct] = useUpdateProductMutation();
 
     const [form] = Form.useForm<IProductPutRequest>();
-
-    // const [product, setProduct] = useState<IProductPutRequest>({
-    //     id: 0,
-    //     name: "",
-    //     price: 0,
-    //     categoryId: "",
-    //     images: []
-    // });
 
     const [fileList, setFileList] = useState<UploadFile[]>([]);
 
@@ -40,12 +32,12 @@ const EditProductPage = () => {
                 ...productData
             });
 
-            const updatedFileList: UploadFile[] = productData.images?.map((image, index) => ({
+            const updatedFileList: UploadFile[] = productData.images?.map((image) => ({
                 uid: image.id.toString(),
                 name: image.name,
                 url: `${APP_ENV.REMOTE_LARGE_IMAGES_URL}${image.name}`,
-                order: index,
-            })) || [];
+                originFileObj: new File([new Blob([''])],image.name,{type: 'old-image'})
+            } as UploadFile)) || [];
 
             setFileList(updatedFileList);
         }
@@ -59,11 +51,7 @@ const EditProductPage = () => {
             order: index,
         }));
 
-        setFileList(newFileList);
-        // setProduct((prev) => ({
-        //     ...prev,
-        //     images: newFileList.map((file) => file.originFileObj as File).filter(Boolean),
-        // }));
+        setFileList([...fileList, ...newFileList]);
     };
 
     const onDragEnd = (result: DropResult) => {
@@ -74,39 +62,14 @@ const EditProductPage = () => {
         setFileList(reorderedFiles);
     };
 
-    // const handleSubmit = async () => {
-    //     if (!product.name || !product.price || !product.categoryId) {
-    //         notification.error({message: "Будь ласка, заповніть всі поля!"});
-    //         return;
-    //     }
-    //     const formData = new FormData();
-    //     formData.append("name", product.name);
-    //     formData.append("price", product.price.toString());
-    //     formData.append("categoryId", product.categoryId);
-    //
-    //     if (product.images && product.images.length > 0) {
-    //         product.images.forEach((image) => {
-    //             formData.append("images", image);
-    //         });
-    //     }
-    //
-    //     try {
-    //         await updateProduct({...product}).unwrap();
-    //         notification.success({message: "Продукт оновлено"});
-    //         navigate("/products");
-    //     } catch {
-    //         notification.error({message: "Помилка оновлення продукту"});
-    //     }
-    // };
 
     const onFinish = async (values: IProductPutRequest) => {
         try {
+            values.id = Number(id);
+            values.images=fileList.map(x=> x.originFileObj as File);
             console.log("Submit Form", values);
-            // values.images = selectedFiles;
-            // //console.log("Server send data: ", values);
-            // const response = await createProduct(values).unwrap();
-            // console.log("Категорія успішно створена:", response);
-            // navigate("..");
+            await updateProduct(values).unwrap();
+            navigate("..");
         } catch (error) {
             console.error("Помилка під час створення категорії:", error);
         }
@@ -114,7 +77,7 @@ const EditProductPage = () => {
 
     return (
         <div className="max-w-lg mx-auto my-6">
-            <h1 className="text-3xl font-bold mb-4">Додати продукт</h1>
+            <h1 className="text-3xl font-bold mb-4">Редагування продукт</h1>
             <Form
                 form={form}
                 onFinish={onFinish}
